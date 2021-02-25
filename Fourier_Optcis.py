@@ -14,29 +14,15 @@ taskName = "ACSinObject"
 numberOfThreads = -1  # number of threads used in the simulation with -1 means using all threads, -2 means using all threads minus 1.
 
 simulatingSpaceSize = 400 # total simulating space in nm
-simulatingSpaceTotalStep = 1 + 2**12 # total simulating steps
+simulatingSpaceTotalStep = 1 + 2**8 # total simulating steps
 
 constant_type = "IBM AC"
-object_type = "Step phase contrast"
+object_type = "Custom"
 
-if constant_type == 'basic':
-##################### Basic setting ####################
-    U_a = 18e3      # eV    Accelerating Voltage
-    U_o = 10        # ev    Electron Voltage
 
-    C_c = 59.8e-3   # m     1st order, 1st degree Chromatic Aberration Coefficient   
-
-    C_3c = 0        # m     3rd order, 1st degree Chromatic aberration coefficient
-    C_cc = 0        # m     1st order, 2nd degree Chromatic aberration coefficient
-
-    C_3 = 55.8e-3   # m     3rd order Spherical Aberration Coefficient
-    delta_E = 0.5
-
-    M_L = 0.653         #       Lateral Magnification
 
 ##################### Basic setting ####################
 if constant_type == "IBM AC":
-##################### AC Constants##
     
     U_a = 15.01e3  # eV  Accelerating Voltage
     U_o = 10  # eV  Electron Voltage
@@ -57,6 +43,7 @@ if constant_type == "IBM AC":
 
 # ##################### NAC Constants######################
 if constant_type =='IBM NAC':
+    
     U_a = 15.01e3  # eV  Accelerating Voltage
     U_o = 10  # eV  Electron Voltage
     C_c = -0.075  # m   Chromatic Aberration Coefficient
