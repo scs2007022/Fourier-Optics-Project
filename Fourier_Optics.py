@@ -93,8 +93,8 @@ q_ill = alpha_ill / lamda
 #############convert defocus_current into delta_z#############
 
 ##################directly use delta_z#############
-# delta_z_series = np.array([0])
-delta_z_series = np.array([100e-6])
+delta_z_series = np.array([0])
+# delta_z_series = np.linspace(-100e-6,100e-6,31)
 ##################directly use delta_z#############
 
 ##################delta_z_star#################
@@ -250,7 +250,7 @@ matrixI = np.abs(matrixI)
 
 print('Simuation finished.')
 
-def plotting():
+def Intensity_position_plotting():
     print('Plotting result.')
 
     object_space = (create_simulated_space()+simulatingSpaceSize/simulatingSpaceTotalStep)
@@ -336,5 +336,70 @@ def plotting():
     print('Result plotted.')
     print("Plot saved.")
     
-plotting()
+def colormap_plotting():
+    object_space = (create_simulated_space()+simulatingSpaceSize/simulatingSpaceTotalStep)
+    image_space = object_space/M_L
+
+
+
+    def object_plot():
+        plt.figure(figsize=(5,8))
+        plt.subplot(211)
+
+        plt.plot(object_space, amp, label = 'Amplitude', linestyle=(8,(5,12)))
+        plt.plot(object_space, phase_shift, label = 'Phase', linestyle=(0,(5,12)))
+    
+        # plt.title('Pure ' + r'$\frac{3\pi}{2}$' + ' phase object')
+        plt.title(object_type + ' object')
+        # plt.title('Pure unit step amplitude object')
+        # plt.title('Pure sin amplitude object')
+        #plt.title('Pure sin amplitude object')
+        
+        plt.xlim(-900,900)
+        # plt.ylim(-0.5,7)
+        
+        plt.xlabel('Position (nm)')
+        plt.ylabel('Amplitude ' + r'$(\frac{W}{m^2})$' + '\n Phase ' + '(rad)')
+        
+        # plt.yticks([0, 1, np.pi/2, 2, np.pi])
+        
+        plt.legend(loc=0)
+        plt.subplot(212)
+        
+        plt.tight_layout()
+    
+    # object_plot()
+    # plt.figure(figsize=(5,12))
+    plt.imshow(matrixI.T, cmap='gray', aspect=simulatingSpaceSize/(max(delta_z_series)-min(delta_z_series))*3,
+               extent=[image_space.min()-1,image_space.max(),
+                       delta_z_series.min(),delta_z_series.max()],
+               interpolation='bilinear', origin='lower',vmin=0,vmax=5
+               )
+    plt.title(object_type + ' object \n with ' + constant_type + ' constant.')
+    plt.colorbar(orientation='vertical')
+    # plt.xticks([-400,0,400])
+    # plt.yticks([-1e-4,0,1e-4])
+    # plt.xlim(-401,401)
+    # plt.ylim(-1e-4,1e-4)
+    plt.xlabel('Position (nm)')
+    # plt.ylabel('defocus (m)')
+    plt.ylabel('Defocus (mA)')
+    plt.xticks([-900,0,900])
+    plt.yticks([min(delta_z_series),0,max(delta_z_series)],[-7,0,7])
+    
+    txt = 'alpha_ap = ' + str(alpha_ap*1e3) + ' mrad'
+    plt.text(0, min(delta_z_series)-5e-5, txt, ha='center')
+    
+    plt.tight_layout()
+    
+    plt.savefig('output.png')
+    plt.show()
+    
+    
+Intensity_position_plotting()
+# colormap_plotting()
+
+end_time = str(time.time())
+np.save(end_time, matrixI)  # save the result as an numpy array
+np.savetxt(end_time + '.csv', matrixI.T, delimiter="," ) #save the result as an .csv, each row represents different defocus, each column represents different position. 
 print('Programme ended.')
